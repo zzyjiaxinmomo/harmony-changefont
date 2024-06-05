@@ -13,6 +13,7 @@ struct SetFontSizePage {
   @State changeFontSize: number = 0
   @State changeFontColor: string = 'rgb(0,0,0)'
   @State fontSizeText: Resource | string = '标准'
+  @State isUpdateFontSize: boolean = false
   private contentArr = SetViewModel.initChatData()
 
   onPageShow() {
@@ -21,6 +22,8 @@ struct SetFontSizePage {
       this.changeFontSize = value;
       this.fontSizeText = SetViewModel.getTextByFontSize(value);
       console.info(TAG, 'Get the value of changeFontSize: ' + this.changeFontSize, this.fontSizeText);
+      console.log('这是 pageshow 完成设置 fontsizetext 的时间' + new Date().getTime())
+      this.isUpdateFontSize = true
     });
     PreferencesUtil.getChangeFontColor().then((value) => {
       this.changeFontColor = value;
@@ -46,8 +49,13 @@ struct SetFontSizePage {
         }
         .layoutWeight(1)
       }
-
-      SliderLayout({ fontSizeText: $fontSizeText, changeFontSize: $changeFontSize, changeFontColor: $changeFontColor })
+      if (this.isUpdateFontSize) {
+        SliderLayout({
+          fontSizeText: $fontSizeText,
+          changeFontSize: $changeFontSize,
+          changeFontColor: $changeFontColor
+        })
+      }
     }
     .backgroundColor($r('sys.color.ohos_id_color_sub_background'))
     .height('100%')
@@ -63,8 +71,8 @@ struct SliderLayout {
   @Link changeFontColor: string;
 
   aboutToAppear() {
+    console.log('这是 appear 获取 fontsizetext 的时间' + new Date().getTime())
     console.log(`这是SliderLayout即将 appear 时的 fontsizetext`, this.fontSizeText)
-
   }
 
   build() {
